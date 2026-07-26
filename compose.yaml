@@ -1,0 +1,28 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    volumes:
+      - med_finances_storage:/var/www/html/storage
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(extension_loaded(\"pdo_sqlite\") ? 0 : 1);'"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      php:
+        condition: service_healthy
+    ports:
+      - "8083:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./public:/var/www/html/public:ro
+
+volumes:
+  med_finances_storage:
