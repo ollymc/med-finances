@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ config.app_name if config else 'BNC Local' }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="brand">BNC Local</div>
+  <nav>
+    <a href="/">Tableau de bord</a>
+    <a href="/transactions">Journal</a>
+    <a href="/bank">Import banque</a>
+    <a href="/documents">Documents</a>
+    <a href="/settings">Paramètres</a>
+  </nav>
+</header>
+<main>{% block content %}{% endblock %}</main>
+<footer>Application locale — aucune connexion Internet requise.</footer>
+</body>
+</html>
