@@ -1,11 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="hero"><h1>Import bancaire CSV</h1><p>L'import reste local. Colonnes reconnues : Date, Libellé, Montant ou Débit/Crédit.</p></section>
+<section class="hero">
+  <span class="eyebrow">Trésorerie</span>
+  <h1>Import bancaire</h1>
+  <p>Import local des mouvements bancaires au format CSV. Aucun accès direct à votre banque n'est nécessaire.</p>
+</section>
+
 <section class="panel narrow">
-<form action="/bank/import" method="post" enctype="multipart/form-data">
-<label>Fichier CSV<input type="file" name="file" accept=".csv,.txt" required></label>
-<button class="primary" type="submit">Importer</button>
-</form>
-<p class="hint">Les lignes sont créées en brouillon afin d'être classées et validées avant utilisation comptable.</p>
+  <div class="panel-head">
+    <div>
+      <h2>Importer un relevé</h2>
+      <p class="panel-subtitle">Colonnes reconnues : Date, Libellé, Montant ou Débit / Crédit.</p>
+    </div>
+    <span class="badge badge-info">CSV</span>
+  </div>
+  <form action="/bank/import" method="post" enctype="multipart/form-data">
+    <label class="upload-zone">
+      <strong>Déposer un export bancaire</strong>
+      <span>Sélectionnez un fichier CSV ou TXT depuis votre poste.</span>
+      <input type="file" name="file" accept=".csv,.txt" required>
+    </label>
+    <div class="form-actions">
+      <button class="primary" type="submit">↥ Importer le relevé</button>
+    </div>
+  </form>
+  <div class="notice" style="margin-top:16px">
+    Les opérations importées sont créées en brouillon. Elles doivent ensuite être catégorisées et validées avant leur utilisation comptable.
+  </div>
 </section>
 {% endblock %}
