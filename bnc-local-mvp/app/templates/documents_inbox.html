@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><h1>Documents</h1><p>Boîte documentaire : scans, pièces jointes et documents à rattacher.</p></section>
+<section class="panel tablewrap">
+<table><thead><tr><th>Import</th><th>Nom</th><th>Source</th><th>Hash</th><th>Rattachement</th><th>Actions</th></tr></thead><tbody>
+{% for d in docs %}<tr>
+<td>{{ d.created_at }}</td><td>{{ d.original_name }}</td><td>{{ d.source }}</td><td><code>{{ d.sha256[:12] }}…</code></td>
+<td>{% if d.transaction_id %}<span class="ok">Rattaché</span>{% else %}<span class="pending">À rattacher</span>{% endif %}</td>
+<td><a class="button" href="/documents/{{ d.id }}">Ouvrir</a>
+{% if not d.transaction_id %}<form class="inline" action="/documents/{{ d.id }}/link" method="post"><select name="transaction_id" required><option value="">Choisir une écriture…</option>{% for t in txs %}<option value="{{ t.id }}">{{ t.tx_date }} — {{ t.label }} — {{ '%.2f'|format(t.amount) }} €</option>{% endfor %}</select><button>Rattacher</button></form>{% endif %}
+</td></tr>{% endfor %}
+</tbody></table>
+</section>
+{% endblock %}
