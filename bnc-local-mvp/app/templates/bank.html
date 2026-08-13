@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><h1>Import bancaire CSV</h1><p>L'import reste local. Colonnes reconnues : Date, Libellé, Montant ou Débit/Crédit.</p></section>
+<section class="panel narrow">
+<form action="/bank/import" method="post" enctype="multipart/form-data">
+<label>Fichier CSV<input type="file" name="file" accept=".csv,.txt" required></label>
+<button class="primary" type="submit">Importer</button>
+</form>
+<p class="hint">Les lignes sont créées en brouillon afin d'être classées et validées avant utilisation comptable.</p>
+</section>
+{% endblock %}
