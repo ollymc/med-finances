@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <span class="eyebrow">Système</span>
+  <h1>Paramètres & sauvegarde</h1>
+  <p>La base SQLite active reste sur le PC. Le NAS reçoit uniquement des sauvegardes cohérentes et le coffre documentaire.</p>
+</section>
+
+<section class="panel narrow">
+  <div class="panel-head">
+    <div>
+      <h2>Destination NAS</h2>
+      <p class="panel-subtitle">Utilisez de préférence un chemin UNC stable pour les sauvegardes automatisées.</p>
+    </div>
+    <span class="badge badge-info">Local → NAS</span>
+  </div>
+  <form action="/settings" method="post" class="form-grid">
+    <label class="span4">Chemin de sauvegarde NAS
+      <input name="nas_backup_path" value="{{ config.nas_backup_path }}" placeholder="Ex. \\NAS-BNC\Backups">
+    </label>
+    <label class="span2">Sauvegardes à conserver
+      <input type="number" name="backup_retention" value="{{ config.backup_retention }}" min="1" max="365">
+    </label>
+    <div class="span4 form-actions"><button class="primary">Enregistrer les paramètres</button></div>
+  </form>
+</section>
+
+<section class="panel narrow">
+  <div class="panel-head">
+    <div>
+      <h2>Sauvegarde immédiate</h2>
+      <p class="panel-subtitle">Snapshot SQLite cohérent, copie des documents et manifeste d'intégrité SHA-256.</p>
+    </div>
+    <span class="badge badge-ok">Vérifiable</span>
+  </div>
+  <div class="notice">
+    La sauvegarde ne copie jamais directement la base active. Elle utilise l'Online Backup API SQLite afin de produire un état transactionnellement cohérent.
+  </div>
+  <div class="form-actions">
+    <form action="/backup" method="post"><button class="primary">⇩ Sauvegarder maintenant vers le NAS</button></form>
+  </div>
+  {% if request.query_params.get('backup') %}
+    <div class="notice success" style="margin-top:14px"><strong>Sauvegarde créée :</strong> {{ request.query_params.get('backup') }}</div>
+  {% endif %}
+</section>
+{% endblock %}

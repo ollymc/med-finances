@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>{{ config.app_name if config else 'BNC Local' }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand-block">
+      <div class="brand-mark">B</div>
+      <div class="brand-copy">
+        <strong>BNC Local</strong>
+        <span>Comptabilité libérale</span>
+      </div>
+    </div>
+
+    <div class="sidebar-label">Pilotage</div>
+    <nav class="sidebar-nav">
+      <a class="nav-item {{ 'active' if request.url.path == '/' else '' }}" href="/">
+        <span class="nav-icon">⌂</span><span>Tableau de bord</span>
+      </a>
+      <a class="nav-item {{ 'active' if request.url.path.startswith('/transactions') else '' }}" href="/transactions">
+        <span class="nav-icon">≡</span><span>Journal</span>
+      </a>
+      <a class="nav-item {{ 'active' if request.url.path.startswith('/bank') else '' }}" href="/bank">
+        <span class="nav-icon">↥</span><span>Banque</span>
+      </a>
+      <a class="nav-item {{ 'active' if request.url.path.startswith('/documents') else '' }}" href="/documents">
+        <span class="nav-icon">▣</span><span>Documents</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-label">Système</div>
+    <nav class="sidebar-nav">
+      <a class="nav-item {{ 'active' if request.url.path.startswith('/settings') else '' }}" href="/settings">
+        <span class="nav-icon">⚙</span><span>Paramètres & backup</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-status">
+      <div class="status-line"><span class="status-dot"></span> Moteur local actif</div>
+      Fonctionnement hors Internet possible.
+    </div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar">
+      <div class="topbar-title">Pilotage comptable BNC</div>
+      <div class="topbar-meta">
+        <span class="top-chip">Exercice 2026</span>
+        <span class="top-chip local"><span class="status-dot"></span> Local</span>
+      </div>
+    </header>
+
+    <main class="content">{% block content %}{% endblock %}</main>
+    <footer class="app-footer">BNC Local · Données actives sur ce poste · Aucune connexion Internet requise</footer>
+  </div>
+</div>
+</body>
+</html>

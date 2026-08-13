@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <span class="eyebrow">GED comptable</span>
+  <h1>Documents</h1>
+  <p>Scans, pièces justificatives et documents en attente de rattachement à une écriture.</p>
+</section>
+
+<section class="panel tablewrap">
+  <div class="panel-head" style="padding:20px 20px 0">
+    <div>
+      <h2>Boîte documentaire</h2>
+      <p class="panel-subtitle">Chaque document est indexé par son empreinte SHA-256.</p>
+    </div>
+  </div>
+  <table>
+    <thead><tr><th>Import</th><th>Nom du document</th><th>Source</th><th>Empreinte</th><th>Rattachement</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for d in docs %}
+      <tr>
+        <td class="mono">{{ d.created_at }}</td>
+        <td class="row-title">{{ d.original_name }}</td>
+        <td><span class="badge badge-info">{{ d.source or 'import' }}</span></td>
+        <td><code>{{ d.sha256[:12] }}…</code></td>
+        <td>{% if d.transaction_id %}<span class="badge badge-ok">✓ Rattaché</span>{% else %}<span class="badge badge-pending">● À rattacher</span>{% endif %}</td>
+        <td>
+          <div class="inline">
+            <a class="button secondary" href="/documents/{{ d.id }}">Ouvrir</a>
+            {% if not d.transaction_id %}
+            <form class="inline" action="/documents/{{ d.id }}/link" method="post">
+              <select class="tiny" name="transaction_id" required>
+                <option value="">Choisir une écriture…</option>
+                {% for t in txs %}<option value="{{ t.id }}">{{ t.tx_date }} — {{ t.label }} — {{ '%.2f'|format(t.amount) }} €</option>{% endfor %}
+              </select>
+              <button>Rattacher</button>
+            </form>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6"><div class="empty-state"><strong>Aucun document</strong>Les scans et pièces jointes apparaîtront ici.</div></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
