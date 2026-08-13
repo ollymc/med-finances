@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Tableau de bord</h1>
+  <p>Comptabilité BNC locale, justificatifs et sauvegarde NAS.</p>
+</section>
+<div class="cards">
+  <div class="card"><span>Recettes</span><strong>{{ '%.2f'|format(d.income) }} €</strong></div>
+  <div class="card"><span>Dépenses</span><strong>{{ '%.2f'|format(d.expense) }} €</strong></div>
+  <div class="card"><span>Trésorerie nette</span><strong>{{ '%.2f'|format(d.net) }} €</strong></div>
+  <div class="card warn"><span>À valider</span><strong>{{ d.pending }}</strong></div>
+  <div class="card warn"><span>Sans justificatif</span><strong>{{ d.missing_docs }}</strong></div>
+</div>
+<section class="panel">
+  <div class="panel-head"><h2>Nouvelle écriture</h2></div>
+  <form action="/transactions/new" method="post" enctype="multipart/form-data" class="form-grid">
+    <label>Date<input type="date" name="tx_date" required></label>
+    <label>Type<select name="kind" id="kind" onchange="syncCategories()"><option value="income">Recette</option><option value="expense">Dépense</option></select></label>
+    <label class="span2">Libellé<input name="label" required placeholder="Ex. Virement CPAM / URSSAF / Elsevier"></label>
+    <label>Tiers<input name="counterparty"></label>
+    <label>Montant (€)<input type="number" name="amount" step="0.01" min="0" required></label>
+    <label>Catégorie<select name="category" id="category"></select></label>
+    <label>Moyen de paiement<input name="payment_method" placeholder="Virement, CB, prélèvement..."></label>
+    <label>Type payeur<input name="payer_type" placeholder="CPAM, AMC, patient..."></label>
+    <label>Token / référence acte<input name="encounter_token" placeholder="Pseudonyme ou encounter UUID"></label>
+    <label>% professionnel<input type="number" name="professional_percent" value="100" min="0" max="100" step="0.01"></label>
+    <label>Code 2035<input name="code_2035" placeholder="Optionnel"></label>
+    <label>Référence bancaire<input name="bank_reference"></label>
+    <label class="span2">Justificatif<input type="file" name="attachment"></label>
+    <label class="span2">Notes<textarea name="notes" rows="2"></textarea></label>
+    <button type="submit" class="primary">Enregistrer</button>
+  </form>
+</section>
+<section class="panel actions">
+  <h2>Acquisition et exports</h2>
+  <div class="buttons">
+    <form action="/scan" method="post"><button>Scanner via DS-740D (Windows)</button></form>
+    <a class="button" href="/export/excel">Exporter Excel</a>
+    <a class="button" href="/export/pdf">Exporter PDF</a>
+    <a class="button" href="/export/word">Exporter Word</a>
+  </div>
+</section>
+<section class="panel">
+  <h2>Dernières écritures</h2>
+  <table><thead><tr><th>Date</th><th>Type</th><th>Libellé</th><th>Catégorie</th><th>Montant</th></tr></thead>
+  <tbody>{% for r in d.recent %}<tr><td>{{ r.tx_date }}</td><td>{{ 'Recette' if r.kind=='income' else 'Dépense' }}</td><td>{{ r.label }}</td><td>{{ r.category }}</td><td>{{ '%.2f'|format(r.amount) }} €</td></tr>{% endfor %}</tbody></table>
+</section>
+<script>
+const income={{ income_categories|tojson }}; const expense={{ expense_categories|tojson }};
+function syncCategories(){const s=document.getElementById('category');s.innerHTML='';const a=document.getElementById('kind').value==='income'?income:expense;a.forEach(x=>{const o=document.createElement('option');o.textContent=x;o.value=x;s.appendChild(o);});}
+syncCategories();
+</script>
+{% endblock %}
