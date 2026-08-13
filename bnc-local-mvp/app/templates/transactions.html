@@ -1,22 +1,50 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="hero"><h1>Journal comptable</h1><p>Les écritures importées de la banque restent à valider jusqu'à classification.</p></section>
+<section class="hero">
+  <span class="eyebrow">Comptabilité</span>
+  <h1>Journal comptable</h1>
+  <p>Les écritures importées ou saisies restent contrôlables avant validation définitive.</p>
+</section>
+
 <section class="panel tablewrap">
-<table>
-<thead><tr><th>Date</th><th>Type</th><th>Libellé</th><th>Montant</th><th>Catégorie</th><th>2035</th><th>Pièces</th><th>État</th><th>Actions</th></tr></thead>
-<tbody>
-{% for r in rows %}
-<tr>
-<td>{{ r.tx_date }}</td><td>{{ 'Recette' if r.kind=='income' else 'Dépense' }}</td><td>{{ r.label }}</td>
-<td>{{ '%.2f'|format(r.amount) }} €</td><td>{{ r.category }}</td><td>{{ r.code_2035 or '' }}</td>
-<td><a href="/transactions/{{ r.id }}/documents">📎 {{ r.doc_count }}</a></td>
-<td>{% if r.validated %}<span class="ok">Validé</span>{% else %}<span class="pending">À valider</span>{% endif %}</td>
-<td>
-{% if not r.validated %}<form class="inline" action="/transactions/{{ r.id }}/validate" method="post"><button>Valider</button></form>{% endif %}
-<form class="inline" action="/transactions/{{ r.id }}/attachment" method="post" enctype="multipart/form-data"><input class="tiny" type="file" name="attachment" required><button>Joindre</button></form>
-</td>
-</tr>
-{% endfor %}
-</tbody></table>
+  <div class="panel-head" style="padding:20px 20px 0">
+    <div>
+      <h2>Écritures</h2>
+      <p class="panel-subtitle">Recettes, dépenses, pièces justificatives et statut de validation.</p>
+    </div>
+    <a class="button secondary" href="/">＋ Nouvelle écriture</a>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th><th>Type</th><th>Libellé</th><th style="text-align:right">Montant</th><th>Catégorie</th><th>2035</th><th>Pièces</th><th>État</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td class="mono">{{ r.tx_date }}</td>
+        <td>{% if r.kind=='income' %}<span class="badge badge-ok">Recette</span>{% else %}<span class="badge badge-danger">Dépense</span>{% endif %}</td>
+        <td><span class="row-title">{{ r.label }}</span></td>
+        <td class="amount {{ r.kind }}">{{ '%.2f'|format(r.amount) }} €</td>
+        <td>{{ r.category }}</td>
+        <td>{% if r.code_2035 %}<span class="badge badge-info">{{ r.code_2035 }}</span>{% else %}<span class="muted">—</span>{% endif %}</td>
+        <td><a class="button ghost" href="/transactions/{{ r.id }}/documents">📎 {{ r.doc_count }}</a></td>
+        <td>{% if r.validated %}<span class="badge badge-ok">✓ Validé</span>{% else %}<span class="badge badge-pending">● À valider</span>{% endif %}</td>
+        <td>
+          <div class="inline">
+            {% if not r.validated %}<form class="inline" action="/transactions/{{ r.id }}/validate" method="post"><button class="secondary">Valider</button></form>{% endif %}
+            <form class="inline" action="/transactions/{{ r.id }}/attachment" method="post" enctype="multipart/form-data">
+              <input class="tiny" type="file" name="attachment" required>
+              <button>Joindre</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="9"><div class="empty-state"><strong>Journal vide</strong>Aucune écriture n’a encore été enregistrée.</div></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
 </section>
 {% endblock %}
