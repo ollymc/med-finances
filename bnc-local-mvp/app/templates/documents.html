@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><h1>Pièces justificatives</h1><p>{{ tx.tx_date }} — {{ tx.label }} — {{ '%.2f'|format(tx.amount) }} €</p></section>
+<section class="panel">
+{% if docs %}<table><thead><tr><th>Date import</th><th>Nom</th><th>Type</th><th>SHA-256</th><th></th></tr></thead><tbody>
+{% for d in docs %}<tr><td>{{ d.created_at }}</td><td>{{ d.original_name }}</td><td>{{ d.document_type }}</td><td><code>{{ d.sha256[:16] }}…</code></td><td><a class="button" href="/documents/{{ d.id }}">Ouvrir</a></td></tr>{% endfor %}
+</tbody></table>{% else %}<p>Aucune pièce jointe.</p>{% endif %}
+</section>
+{% endblock %}
