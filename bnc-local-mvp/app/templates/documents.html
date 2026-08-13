@@ -1,9 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="hero"><h1>Pièces justificatives</h1><p>{{ tx.tx_date }} — {{ tx.label }} — {{ '%.2f'|format(tx.amount) }} €</p></section>
-<section class="panel">
-{% if docs %}<table><thead><tr><th>Date import</th><th>Nom</th><th>Type</th><th>SHA-256</th><th></th></tr></thead><tbody>
-{% for d in docs %}<tr><td>{{ d.created_at }}</td><td>{{ d.original_name }}</td><td>{{ d.document_type }}</td><td><code>{{ d.sha256[:16] }}…</code></td><td><a class="button" href="/documents/{{ d.id }}">Ouvrir</a></td></tr>{% endfor %}
-</tbody></table>{% else %}<p>Aucune pièce jointe.</p>{% endif %}
+<section class="hero">
+  <span class="eyebrow">Justificatifs</span>
+  <h1>Pièces de l’écriture</h1>
+  <p>{{ tx.tx_date }} · {{ tx.label }} · <strong>{{ '%.2f'|format(tx.amount) }} €</strong></p>
+</section>
+
+<section class="panel tablewrap">
+  <div class="panel-head" style="padding:20px 20px 0">
+    <div>
+      <h2>Documents rattachés</h2>
+      <p class="panel-subtitle">Les empreintes permettent de vérifier l’intégrité et d’éviter les doublons.</p>
+    </div>
+    <a class="button secondary" href="/transactions">← Retour au journal</a>
+  </div>
+  {% if docs %}
+  <table>
+    <thead><tr><th>Date import</th><th>Nom</th><th>Type</th><th>SHA-256</th><th>Action</th></tr></thead>
+    <tbody>
+      {% for d in docs %}
+      <tr>
+        <td class="mono">{{ d.created_at }}</td>
+        <td class="row-title">{{ d.original_name }}</td>
+        <td><span class="badge badge-info">{{ d.document_type or 'Justificatif' }}</span></td>
+        <td><code>{{ d.sha256[:16] }}…</code></td>
+        <td><a class="button secondary" href="/documents/{{ d.id }}">Ouvrir</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state"><strong>Aucune pièce jointe</strong>Ajoutez un justificatif depuis le journal comptable.</div>
+  {% endif %}
 </section>
 {% endblock %}
