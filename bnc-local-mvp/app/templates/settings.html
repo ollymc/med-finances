@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><h1>Paramètres et sauvegarde</h1><p>Le NAS contient des sauvegardes cohérentes, jamais la base SQLite active.</p></section>
+<section class="panel narrow">
+<form action="/settings" method="post">
+<label>Chemin de sauvegarde NAS<input name="nas_backup_path" value="{{ config.nas_backup_path }}" placeholder="Ex. Z:\\BNC-Backups ou \\\\NAS\\BNC-Backups"></label>
+<label>Nombre de sauvegardes à conserver<input type="number" name="backup_retention" value="{{ config.backup_retention }}" min="1" max="365"></label>
+<button class="primary">Enregistrer</button>
+</form>
+</section>
+<section class="panel narrow">
+<h2>Sauvegarde immédiate</h2>
+<p>Produit un snapshot SQLite via Online Backup API, copie le coffre documentaire et génère un manifeste SHA-256.</p>
+<form action="/backup" method="post"><button class="primary">Sauvegarder maintenant vers le NAS</button></form>
+{% if request.query_params.get('backup') %}<p class="ok">Sauvegarde créée : {{ request.query_params.get('backup') }}</p>{% endif %}
+</section>
+{% endblock %}
