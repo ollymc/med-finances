@@ -1,0 +1,20 @@
+# Runtime/local data
+config.json
+data/
+*.sqlite3
+*.db
+*.log
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Generated exports/backups
+exports/
+backups/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
