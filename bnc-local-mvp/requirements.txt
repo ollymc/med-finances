@@ -1,0 +1,7 @@
+fastapi>=0.110,<1
+uvicorn[standard]>=0.27,<1
+jinja2>=3.1,<4
+python-multipart>=0.0.9,<1
+openpyxl>=3.1,<4
+reportlab>=4,<5
+python-docx>=1.1,<2
