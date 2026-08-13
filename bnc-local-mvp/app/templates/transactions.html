@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><h1>Journal comptable</h1><p>Les écritures importées de la banque restent à valider jusqu'à classification.</p></section>
+<section class="panel tablewrap">
+<table>
+<thead><tr><th>Date</th><th>Type</th><th>Libellé</th><th>Montant</th><th>Catégorie</th><th>2035</th><th>Pièces</th><th>État</th><th>Actions</th></tr></thead>
+<tbody>
+{% for r in rows %}
+<tr>
+<td>{{ r.tx_date }}</td><td>{{ 'Recette' if r.kind=='income' else 'Dépense' }}</td><td>{{ r.label }}</td>
+<td>{{ '%.2f'|format(r.amount) }} €</td><td>{{ r.category }}</td><td>{{ r.code_2035 or '' }}</td>
+<td><a href="/transactions/{{ r.id }}/documents">📎 {{ r.doc_count }}</a></td>
+<td>{% if r.validated %}<span class="ok">Validé</span>{% else %}<span class="pending">À valider</span>{% endif %}</td>
+<td>
+{% if not r.validated %}<form class="inline" action="/transactions/{{ r.id }}/validate" method="post"><button>Valider</button></form>{% endif %}
+<form class="inline" action="/transactions/{{ r.id }}/attachment" method="post" enctype="multipart/form-data"><input class="tiny" type="file" name="attachment" required><button>Joindre</button></form>
+</td>
+</tr>
+{% endfor %}
+</tbody></table>
+</section>
+{% endblock %}
